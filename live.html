@@ -291,15 +291,19 @@
             document.getElementById('playoff-container').innerHTML = gridHtml + finalHtml;
             if (finalM && finalM.done) {
                 const winner = finalM.sA > finalM.sB ? finalM.teamA : finalM.teamB;
+                
+                // We use a wrapper div with a specific ID to help the saver find it
                 document.getElementById('champion-display').innerHTML = `
-                    <div class="champ-box">
-                        🏆 CHAMPIONS 🏆
-                        <br>
-                        <span style="font-size: 1.5rem; display: block; margin-top: 10px;">
-                            🥇 ${winner} 🥇
-                        </span>
+                    <div class="champ-box" style="text-align: center; padding: 15px; border: 3px solid #b8860b; background-color: #ffffff; width: 100%; box-sizing: border-box;">
+                        
+                        <div style="font-size: 14px; font-weight: bold; color: #b8860b; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px;">
+                            🏆 CHAMPIONS 🏆
+                        </div>
+                            <div style="font-size: 24px; font-weight: 800; color: #1e3a8a; line-height: 1.2; word-wrap: break-word;">
+                                🥇 ${winner} 🥇
+                            </div>
                     </div>`;
-}
+            }
         }
     }
 </script>
