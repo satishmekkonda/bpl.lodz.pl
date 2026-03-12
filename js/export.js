@@ -118,7 +118,7 @@ function exportLiveImage() {
     
     const clone = content.cloneNode(true);
     
-    // Manual sync for Champions and Overlay
+    // Sync dynamic content
     const realChamp = document.getElementById('champion-display');
     const cloneChamp = clone.querySelector('#champion-display');
     if (realChamp && cloneChamp) { cloneChamp.innerHTML = realChamp.innerHTML; }
@@ -146,34 +146,37 @@ function exportLiveImage() {
             const dateStr = new Date().toISOString().split('T')[0];
             const fileName = `BPL_Live_${dateStr}.png`;
 
-            // --- MOBILE STABILITY LOGIC ---
-            // 1. Create the link
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = fileName;
-            document.body.appendChild(link);
-            
-            // 2. Try the automatic download
-            link.click();
+            // Detect if the user is on a mobile device (iPhone/Android)
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-            // 3. SAFETY NET FOR IPHONES: 
-            // If the download doesn't trigger immediately, we open it in a new window.
-            // This is the "Open, Long-Press, Save" method.
-            setTimeout(() => {
+            if (isMobile) {
+                // MOBILE LOGIC: Open directly in a new tab for "Long-Press to Save"
+                // We do this immediately without an alert to avoid the "Black Screen"
                 const newWindow = window.open();
                 if (newWindow) {
-                    newWindow.document.write(`<img src="${dataUrl}" style="width:100%" />`);
+                    newWindow.document.write(`
+                        <body style="margin:0; background:#f1f5f9; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:sans-serif;">
+                            <p style="margin:20px; color:#1e3a8a; font-weight:bold;">Hold finger on image to Save/Share</p>
+                            <img src="${dataUrl}" style="width:100%; box-shadow: 0 0 20px rgba(0,0,0,0.2);" />
+                        </body>
+                    `);
                     newWindow.document.title = fileName;
-                    alert("If download didn't start, long-press the image in the new tab to save it!");
                 }
-            }, 500);
+            } else {
+                // DESKTOP LOGIC: Standard automatic download
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
 
-            // Cleanup
-            document.body.removeChild(link);
+            // Cleanup the hidden wrapper
             document.body.removeChild(wrapper);
         }).catch(err => {
             console.error(err);
-            document.body.removeChild(wrapper);
+            if(document.body.contains(wrapper)) document.body.removeChild(wrapper);
         });
     }, 300);
 }
