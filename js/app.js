@@ -37,8 +37,12 @@ window.onload = function() {
 	
 //Not lose Entered Data on refresh
 function saveData() {
+
+    // NEW: Create a timestamp of the exact moment data is saved
+    const lastUpdated = new Date().toISOString();
+
     // Added playoffScores to the object below
-    const data = { advPlayers, intPlayers, manualPlayers, pairs, matches, isManualMode, playoffScores }; 
+    const data = { advPlayers, intPlayers, manualPlayers, pairs, matches, isManualMode, playoffScores, lastUpdated }; 
     localStorage.setItem('bpl_2026_data', JSON.stringify(data));
 
     // Mirror data to the cloud

@@ -185,8 +185,12 @@
         const data = snapshot.val();
         if (data) {
             updateLiveUI(data);
+
+            // CHANGE: Use data.lastUpdated from the DB instead of "new Date()"
+            if (data.lastUpdated) {
+                const syncDate = new Date(data.lastUpdated);
             // 24H Format forced via 'en-GB' locale
-            document.getElementById('sync-time').innerText = "Last Sync: " + new Date().toLocaleTimeString('en-GB', { 
+            document.getElementById('sync-time').innerText = "Last Sync: " + syncDate.toLocaleTimeString('en-GB', { 
                 day: '2-digit', 
                 month: 'short',
                 hour: '2-digit', 
@@ -194,6 +198,7 @@
                 second: '2-digit', 
                 hour12: false 
             }) + ", ŁÓDŹ";
+        }
         }
     });
 
